@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 number = 1
-#number = 1
+#number = 2
 print("numberには" + str(number) + "が代入されています")
 
 if (number == 1):
