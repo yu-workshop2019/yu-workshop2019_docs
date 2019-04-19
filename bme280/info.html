@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1, user-scalable=0" />
+    <title>Temperature_Information</title>
+
+    <style type="text/css">
+	body{
+	    background-color:#222222;
+	}
+
+    .rtClock {
+        font-family: "Arial",sans-serif; font-size: 1.2em; color: #44aa22;
+    }
+
+    .RoomTemp {
+        font-family: "Arial",sans-serif; font-size: 1.2em; color: #44aa22;
+	}
+
+    .CPUTemp {
+        font-family: "Arial",sans-serif; font-size: 1.2em; color: #44aa22;
+    }
+
+    .RoomPres {
+        font-family: "Arial",sans-serif; font-size: 1.2em; color: #44aa22;
+    }
+
+    .RoomHumi {
+        font-family: "Arial",sans-serif; font-size: 1.2em; color: #44aa22;
+    }
+
+
+    </style>
+</head>
+
+<body>
+    <center>
+
+    <!--clock-->
+	<div>
+	<p id="RealtimeClockArea" class="rtClock"></p>
+    </div>
+
+    <!--Room_Temp-->
+    <div>
+    <p id="RoomTempArea" class="RoomTemp"></p>
+    </div>
+
+    <!--CPU_Temp-->
+    <div>
+    <p id="CPUTempArea" class="CPUTemp"></p>
+    </div>
+
+    <!--Room_Pressure-->
+    <div>
+    <p id="RoomPresArea" class="RoomPres"></p>
+    </div>
+
+    <!--Room_Humidity-->
+    <div>
+    <p id="RoomHumiArea" class="RoomHumi"></p>
+    </div>
+
+    <div>
+    <h1><a href = ./chart.html>chart</a></h>
+    </div>
+
+         <div>
+         <h1><a href = ../Hokkaido_livecam.html>Hokkaido</a></h>
+         </div>
+
+
+    </center>
+
+
+    <!--clock-->
+	<script type="text/javascript">
+	function set2fig(num) {
+	   var ret;
+	   if( num < 10 ) { ret = "0" + num; }
+	   else { ret = num; }
+	   return ret;
+	}
+	function showClock() {
+        var nowTime = new Date();
+	    var nowYear = ( nowTime.getFullYear() );
+        var nowMonth = set2fig( nowTime.getMonth()+1 );
+        var nowDate = set2fig( nowTime.getDate() );
+	    var nowDay = ( nowTime.getDay() );
+
+	   var nowHour = set2fig( nowTime.getHours() );
+	   var nowMin  = set2fig( nowTime.getMinutes() );
+	   var nowSec  = set2fig( nowTime.getSeconds() );
+	   var youbi = new Array("Sun.","Mon.","Tue.","Wed.","Thu.","Fri.","Sat.");
+	   var msg = nowYear + "/" + nowMonth + "/" +nowDate + " (" + youbi[nowDay] + ")    " + nowHour + ":" + nowMin + ":" + nowSec
+	   document.getElementById("RealtimeClockArea").innerHTML = msg;
+	}
+	setInterval('showClock()',1000);
+	</script>
+
+
+    <!--Room_Temp-->
+	<script type="text/javascript">
+    function getRoomTemp() {
+        var file = "./temp.txt";
+        var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+        req.open("get", file, false); // アクセスするファイルを指定
+        req.send(null); // HTTPリクエストの発行
+
+        // レスポンスが返ってきたら値を返す
+        //req.onload = function(){
+        return(req.responseText * 1.0);
+    }
+	function showRoomTemp() {
+	   var msg = getRoomTemp();
+	   document.getElementById("RoomTempArea").innerHTML = "Room_Temperature:" + msg.toFixed(2) + "(\'C)";
+	}
+	setInterval('showRoomTemp()',1000);
+	</script>
+
+
+    <!--CPU_Temp-->
+    <script type="text/javascript">
+    function getCPUTemp() {
+        var file = "./cpu_temp.txt";
+        var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+        req.open("get", file, false); // アクセスするファイルを指定
+        req.send(null); // HTTPリクエストの発行
+
+        // レスポンスが返ってきたら値を返す
+        //req.onload = function(){
+        return(req.responseText / 1000.0);
+    }
+    function showCPUTemp() {
+       var msg = getCPUTemp();
+       document.getElementById("CPUTempArea").innerHTML = "CPU_Temperature:" + msg.toFixed(2) + "(\'C)";
+    }
+    setInterval('showCPUTemp()',1000);
+    </script>
+    <br></div>
+
+
+    <!--Room_Humidity-->
+    <script type="text/javascript">
+    function getRoomHumi() {
+        var file = "./humi.txt";
+        var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+        req.open("get", file, false); // アクセスするファイルを指定
+        req.send(null); // HTTPリクエストの発行
+
+        // レスポンスが返ってきたら値を返す
+        //req.onload = function(){
+        return(req.responseText * 1.0);
+    }
+    function showRoomHumi() {
+       var msg = getRoomHumi();
+       document.getElementById("RoomHumiArea").innerHTML = "Room_Humidity:" + msg.toFixed(2) + "(%)";
+    }
+    setInterval('showRoomHumi()',1000);
+    </script>
+    <br></div>
+
+
+    <!--Room_pressure-->
+    <script type="text/javascript">
+    function getRoomPres() {
+        var file = "./pres.txt";
+        var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+        req.open("get", file, false); // アクセスするファイルを指定
+        req.send(null); // HTTPリクエストの発行
+
+        // レスポンスが返ってきたら値を返す
+        //req.onload = function(){
+        return(req.responseText * 1.0);
+    }
+    function showRoomPres() {
+       var msg = getRoomPres();
+       document.getElementById("RoomPresArea").innerHTML = "Room_Pressure:" + msg.toFixed(2) + "(hPa)";
+    }
+    setInterval('showRoomPres()',1000);
+    </script>
+    <br></div>
+
+
+</center>
+
+
+
+</body>
+</html>

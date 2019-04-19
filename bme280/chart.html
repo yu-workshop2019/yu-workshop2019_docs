@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+<head>
+	<title>chart</title>
+
+
+	<!--日付を扱うライブラリ-->
+	<script src="./moment.min.js"></script>
+	<!--グラフの描画を扱うライブラリ-->
+	<script src="./Chart.min.js"></script>
+	<!--新データ追加に伴うグラフのスクロールを制御するライブラリ-->
+	<!--https://github.com/nagix/chartjs-plugin-streaming-->
+	<script src="./chartjs-plugin-streaming_24h.min.js"></script>
+
+	<!--テキストファイル読み込みを扱うライブラリ-->
+	<script src="./xmlhttp.js"></script>
+
+	<style>
+	body{
+		background-color:#A0A0A0;
+	}
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+
+</head>
+
+<body>
+
+	<!--表示部ここから-->
+	<center>
+	<div style="width:80%;">
+		<!--チャートを表示するキャンバス-->
+		<canvas id="canvas"></canvas>
+	</div>
+	</center>
+	<br>
+	<!--表示部ここまで-->
+
+	<!--チャートの表示制御ここから-->
+	<script>
+		//色の定義
+		var chartColors = {
+			red:    'rgb(220, 40, 40)',
+			orange: 'rgb(255, 159, 64)',
+			yellow: 'rgb(255, 205, 86)',
+			green:  'rgb(40, 220, 40)',
+			blue:   'rgb(54, 162, 235)',
+			purple: 'rgb(153, 102, 255)',
+			grey:   'rgb(201, 203, 207)'
+		};
+
+		//時刻を返す
+		function getDate() {
+			var now = moment();
+			var time = now.format("MM/DD HH:mm:ss");
+			return now;
+		}
+
+		//CPU温度を返す
+		function CPUTemp() {
+			//var file = "/sys/class/thermal/thermal_zone0/temp";
+			var file = "./cpu_temp.txt";
+			var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+			req.open("get", file, false); // アクセスするファイルを指定
+			req.send(null); // HTTPリクエストの発行
+
+			// レスポンスが返ってきたら値を返す
+			//req.onload = function(){
+			return(req.responseText / 1000.0);
+		}
+
+		//室温を返す
+		function RoomTemp() {
+			var file = "./temp.txt";
+			var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+			req.open("get", file, false); // アクセスするファイルを指定
+			req.send(null); // HTTPリクエストの発行
+
+			// レスポンスが返ってきたら値を返す
+			//req.onload = function(){
+			return(req.responseText);
+		}
+
+		//気圧を返す
+		function RoomPres() {
+			var file = "./pres.txt";
+			var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+			req.open("get", file, false); // アクセスするファイルを指定
+			req.send(null); // HTTPリクエストの発行
+
+			// レスポンスが返ってきたら値を返す
+			//req.onload = function(){
+			return(req.responseText);
+		}
+
+
+		//湿度を返す
+		function RoomHumi() {
+			var file = "./humi.txt";
+			var req = new XMLHttpRequest(); // HTTPでファイルを読み込むためのXMLHttpRrequestオブジェクトを生成
+			req.open("get", file, false); // アクセスするファイルを指定
+			req.send(null); // HTTPリクエストの発行
+
+			// レスポンスが返ってきたら値を返す
+			//req.onload = function(){
+			return(req.responseText);
+		}
+
+
+		//更新（新しいデータの追加）と再描画(スクロール)
+		function onRefresh() {
+			//系列1の更新
+			config.data.datasets[0].data.push({
+				x: getDate(),
+				y: RoomTemp()
+			});
+
+			//系列2の更新
+			config.data.datasets[1].data.push({
+				x: getDate(),
+				y: CPUTemp()
+			});
+
+			//系列3の更新
+			config.data.datasets[2].data.push({
+				x: getDate(),
+				y: RoomPres()
+			});
+
+
+			//系列4の更新
+			config.data.datasets[3].data.push({
+				x: getDate(),
+				y: RoomHumi()
+			});
+		}
+
+		var color = Chart.helpers.color;
+
+		//折れ線グラフの定義
+		var config = {
+			type: 'line',
+			data: {
+				datasets: [{
+					//系列1
+					label: 'Room_temperature(\'C)',
+					backgroundColor: color(chartColors.green).alpha(0.9).rgbString(),
+					borderColor: chartColors.green,
+					fill: false,
+					cubicInterpolationMode: 'monotone',
+					data: []
+				}, {
+					//系列2
+					label: 'CPU_temperature(\'C)',
+					backgroundColor: color(chartColors.red).alpha(0.9).rgbString(),
+					borderColor: chartColors.red,
+					fill: false,
+					cubicInterpolationMode: 'monotone',
+					data: []
+				}, {
+					//系列3
+					label: 'Room_pressure(hPa)',
+					backgroundColor: color(chartColors.orange).alpha(0.9).rgbString(),
+					borderColor: chartColors.orange,
+					fill: false,
+					cubicInterpolationMode: 'monotone',
+					//第二軸に表示
+					yAxisID: "y_right",
+					data: []
+				}, {
+					//系列4
+					label: 'Room_Humidity(%)',
+					backgroundColor: color(chartColors.blue).alpha(0.9).rgbString(),
+					borderColor: chartColors.blue,
+					fill: false,
+					cubicInterpolationMode: 'monotone',
+					data: []
+				}]
+			},
+
+			//チャートの体裁
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Lab_304 information & Raspberry Pi CPU temperature (RealTime)'
+				},
+				scales: {
+					xAxes: [{
+						type: 'realtime',
+						display: true,
+					}],
+
+					yAxes: [{
+						//左(第1軸)
+						type: 'linear',
+						display: true,
+						//y軸の範囲（最大値および最小値）
+						ticks: {
+            				beginAtZero: true,
+            				min: 0,
+            				max: 100
+						},
+						scaleLabel: {
+							display: true,
+							labelString: '(\'C or %)'
+						}
+					},
+					{
+						//右(第2軸)
+						id:"y_right",
+						position:"right",
+						type: 'linear',
+						display: true,
+						//y軸の範囲（最大値および最小値）
+						ticks: {
+							beginAtZero: true,
+							min: 900,
+							max: 1100
+						},
+						scaleLabel: {
+							display: true,
+							labelString: '(hPa)'
+						}
+					}],
+
+				},
+				tooltips: {
+					intersect: false
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: false
+				},
+				plugins: {
+					//描画やスクロールの設定
+					streaming: {
+						//duration: 20000,
+						duration: 100000,
+						refresh: 1000,
+						delay: 2000,
+						onRefresh: onRefresh
+					}
+				}
+			}
+		};
+
+		//チャートのオブジェクトの生成
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+	</script>
+
+	<!--チャートの表示制御ここまで-->
+
+</body>
+
+</html>
