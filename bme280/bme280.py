@@ -22,7 +22,7 @@ digH = []
 
 t_fine = 0.0
 
-INTERVAL = 300
+INTERVAL = 1
 
 SAVE_DIR = "/home/pi/bme280/"
 
@@ -228,7 +228,7 @@ def main():
 			putTemp(temperature)
 			putPres(pressure)
 			putHumi(humidity)
-			putLog(temperature, pressure, humidity)
+			#putLog(temperature, pressure, humidity)
 			sleep(INTERVAL);
 	except KeyboardInterrupt:
 		pass
