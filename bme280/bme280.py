@@ -24,7 +24,7 @@ t_fine = 0.0
 
 INTERVAL = 300
 
-SAVE_DIR = "/home/pi/webiopi_source/bme280/"
+SAVE_DIR = "/home/pi/bme280/"
 
 
 def writeReg(reg_address, data):
