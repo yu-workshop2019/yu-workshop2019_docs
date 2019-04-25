@@ -22,7 +22,7 @@ digH = []
 
 t_fine = 0.0
 
-INTERVAL = 300
+INTERVAL = 1
 
 SAVE_DIR = "/home/pi/"
 
