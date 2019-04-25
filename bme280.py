@@ -24,7 +24,7 @@ t_fine = 0.0
 
 INTERVAL = 300
 
-SAVE_DIR = "/home/pi/webiopi_source/bme280/"
+SAVE_DIR = "/home/pi/"
 
 
 def writeReg(reg_address, data):
@@ -225,9 +225,9 @@ def main():
 		while(True):
 			temperature, pressure, humidity = readData()
 			#display(temperature, pressure, humidity)
-			putTemp(temperature)
-			putPres(pressure)
-			putHumi(humidity)
+			#putTemp(temperature)
+			#putPres(pressure)
+			#putHumi(humidity)
 			putLog(temperature, pressure, humidity)
 			sleep(INTERVAL);
 	except KeyboardInterrupt:
