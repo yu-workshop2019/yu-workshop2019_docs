@@ -4,7 +4,7 @@ import wiringpi as wp
 import time
 
 LED_PIN = 26
-INTERVAL = 1.0
+INTERVAL = 0.5
 
 wp.wiringPiSetupGpio()
 
