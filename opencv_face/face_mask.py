@@ -57,7 +57,11 @@ def face_detect(src, pure_image, cascade):
                 #dst = frame[y:y+h, x:x+w]
                 #blur = cv2.blur(dst, (50, 50))
                 #frame[y:y+h, x:x+w] = blur
-
+                
+                
+        #ウィンドウの定義
+        cv2.namedWindow("face_mask", cv2.WINDOW_NORMAL)
+        
         #合成した映像をウィンドウに出力
         cv2.imshow("face_mask", frame)
 
