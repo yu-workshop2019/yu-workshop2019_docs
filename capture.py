@@ -4,9 +4,9 @@
 import cv2
 
 #URL = "http://pi:raspberry@10.159.13.13:9000/?action=stream"
-URL = "http://10.159.13.14:9000/?action=stream"
-src = cv2.VideoCapture(URL)
-#src = cv2.VideoCapture(0)
+#URL = "http://10.159.13.14:9000/?action=stream"
+#src = cv2.VideoCapture(URL)
+src = cv2.VideoCapture(0)
 
 while(True):
 
