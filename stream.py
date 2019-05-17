@@ -46,4 +46,4 @@ if __name__ == '__main__':
 
     #すべてのウィンドウを破棄
     cv2.destroyAllWindows()
-src.release()
+    src.release()
